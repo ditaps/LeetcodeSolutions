@@ -1,5 +1,6 @@
 package com.leetcode;
 
+import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Stack;
  **/
 public class SolutionJava {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         SolutionJava solution = new SolutionJava();
 //        int[] b = new int[] {};
 //        int[] a = new int[] {3, 4, 4, 5, 6, 7, 8, 9};
@@ -19,9 +21,16 @@ public class SolutionJava {
 //        String ans = solution.longestPalindrome(s);
 //        System.out.println(ans);
 
-        int[] heights = {2, 4, 5, 4, 3, 1};
-        int area = solution.largestRectangleArea(heights);
-        System.out.println(area);
+        //int[] heights = {2, 4, 5, 4, 3, 1};
+        //int area = solution.largestRectangleArea(heights);
+        //System.out.println(area);
+
+        while (sc.hasNext()) {
+            String s = sc.nextLine();
+            int res = solution.longestValidParentheses(s);
+            System.out.println(res);
+        }
+
     }
 
     /**
@@ -150,6 +159,36 @@ public class SolutionJava {
             stack.push(i);
         }
         return maxArea;
+    }
+
+    /**
+     * 32. 最长有效括号
+     * https://leetcode-cn.com/problems/longest-valid-parentheses/
+     * 给定一个只包含 '(' 和 ')' 的字符串，找出最长的包含有效括号的子串的长度。
+     *
+     * @param s
+     * @return
+     */
+    public int longestValidParentheses(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int[] d = new int[s.length()];
+        int maxLen = 0;
+        for (int i = 1; i < s.length(); ++i) {
+            int start = i - d[i - 1] - 1;
+            if (s.charAt(i) == ')' && start >= 0 && s.charAt(start) == '(') {
+                d[i] = d[i - 1] + 2;
+                if (start - 1 >= 0) {
+                    // 加上前面匹配的
+                    d[i] += d[start - 1];
+                }
+            }
+            if (d[i] > maxLen) {
+                maxLen = d[i];
+            }
+        }
+        return maxLen;
     }
 
 }
