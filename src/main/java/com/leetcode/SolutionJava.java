@@ -1,5 +1,7 @@
 package com.leetcode;
 
+import java.util.Stack;
+
 /**
  * Leetcode java代码
  *
@@ -13,9 +15,13 @@ public class SolutionJava {
 //        int[] a = new int[] {3, 4, 4, 5, 6, 7, 8, 9};
 //        double ans = solution.findMedianSortedArrays(a, b);
 //        System.out.println(ans);
-        String s = "aa";
-        String ans = solution.longestPalindrome(s);
-        System.out.println(ans);
+//        String s = "aa";
+//        String ans = solution.longestPalindrome(s);
+//        System.out.println(ans);
+
+        int[] heights = {2, 4, 5, 4, 3, 1};
+        int area = solution.largestRectangleArea(heights);
+        System.out.println(area);
     }
 
     /**
@@ -112,4 +118,38 @@ public class SolutionJava {
         int right = left + maxLen - 1;
         return s.substring(left, right);
     }
+
+    /**
+     * 84. 柱状图中最大的矩形
+     * https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
+     * 处理成单调递增序列，当高度下降的时候，再去递归处理原先的最大面积
+     *
+     * @param heights n个非负整数
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        int maxArea = 0;
+        /** 宽 */
+        int width = 0;
+        /** 高 */
+        int height = 0;
+        /** 暂存的递增高度序列 */
+        Stack<Integer> stack = new Stack<Integer>();
+        for (int i = 0; i <= heights.length; ++i) {
+            while (!stack.isEmpty() && (i == heights.length || heights[i] <= heights[stack.peek()])) {
+                height = heights[stack.pop()];
+                width = stack.isEmpty() ? i : i - 1 - stack.peek();
+                int area = height * width;
+                if (area > maxArea) {
+                    maxArea = area;
+                }
+            }
+            stack.push(i);
+        }
+        return maxArea;
+    }
+
 }
