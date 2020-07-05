@@ -25,11 +25,14 @@ public class SolutionJava {
         //int area = solution.largestRectangleArea(heights);
         //System.out.println(area);
 
-        while (sc.hasNext()) {
-            String s = sc.nextLine();
-            int res = solution.longestValidParentheses(s);
-            System.out.println(res);
-        }
+        //while (sc.hasNext()) {
+        //    String s = sc.nextLine();
+        //    int res = solution.longestValidParentheses(s);
+        //    System.out.println(res);
+        //}
+
+        boolean ans = solution.isMatch("", "");
+        System.out.println(ans);
 
     }
 
@@ -189,6 +192,40 @@ public class SolutionJava {
             }
         }
         return maxLen;
+    }
+
+    /**
+     * 44. 通配符匹配
+     * https://leetcode-cn.com/problems/wildcard-matching/
+     *
+     * @param s 字符串
+     * @param p 字符模式
+     * @return
+     */
+    public boolean isMatch(String s, String p) {
+        if (s == null && p == null) {
+            return true;
+        } else if (s == null || p == null) {
+            return false;
+        }
+        /**
+         * dp[i][j] 表示 s的前i个字符跟 p 的前j个字符的匹配情况
+         */
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        dp[0][0] = true;
+        for (int j = 0; j < p.length(); ++j) {
+            dp[0][j + 1] = dp[0][j] && p.charAt(j) == '*';
+        }
+        for (int i = 0; i < s.length(); ++i) {
+            for (int j = 0; j < p.length(); ++j) {
+                if (p.charAt(j) == '*') {
+                    dp[i + 1][j + 1] = dp[i][j + 1] || dp[i + 1][j];
+                } else {
+                    dp[i + 1][j + 1] = (p.charAt(j) == '?' || s.charAt(i) == p.charAt(j)) && dp[i][j];
+                }
+            }
+        }
+        return dp[s.length()][p.length()];
     }
 
 }
