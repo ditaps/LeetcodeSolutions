@@ -1,5 +1,7 @@
 package com.leetcode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -31,8 +33,16 @@ public class SolutionJava {
         //    System.out.println(res);
         //}
 
-        boolean ans = solution.isMatch("", "");
-        System.out.println(ans);
+        //boolean ans = solution.isMatch("", "");
+        //System.out.println(ans);
+
+        int[] nums = {7, 2, 6, 1};
+        for (int i = 0; i < nums.length; i++) {
+            System.out.print(nums[i] + ",");
+        }
+        System.out.println();
+        List<Integer> ans = solution.countSmaller(nums);
+        ans.stream().forEach(x -> System.out.print(x + ","));
 
     }
 
@@ -226,6 +236,106 @@ public class SolutionJava {
             }
         }
         return dp[s.length()][p.length()];
+    }
+
+    /**
+     * 315. 计算右侧小于当前元素的个数
+     * https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> countSmaller(int[] nums) {
+        // 当前位置i对应的元素的原始下标
+        int[] ind = new int[nums.length];
+        // 原始位置 i 对应的右边比它小的数
+        int[] ans = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            ind[i] = i;
+        }
+        countSmallerMergeSort(nums, 0, nums.length, ind, ans);
+        //for (int i = 0; i < nums.length; i++) {
+        //    System.out.println(String.format("i = %d, nums[i] = %d, ind[i] = %d, ans[i] = %d", i, nums[i], ind[i], ans[i]));
+        //}
+        List<Integer> list = new ArrayList<>(nums.length);
+        for (int i = 0; i < ans.length; ++i) {
+            list.add(ans[i]);
+        }
+        return list;
+    }
+
+    /**
+     * 归并排序
+     *
+     * @param nums
+     * @param left
+     * @param right
+     * @param ind
+     * @param ans
+     */
+    private void countSmallerMergeSort(int[] nums, int left, int right, int[] ind, int[] ans) {
+        if (left >= right - 1) {
+            return;
+        }
+        int mid = left + ((right - left) >> 1);
+        countSmallerMergeSort(nums, left, mid, ind, ans);
+        countSmallerMergeSort(nums, mid, right, ind, ans);
+        countSmallerMerge(nums, left, mid, right, ind, ans);
+    }
+
+    /**
+     * 归并
+     *
+     * @param nums
+     * @param left
+     * @param mid
+     * @param right
+     * @param ind
+     * @param ans
+     */
+    private void countSmallerMerge(int[] nums, int left, int mid, int right, int[] ind, int[] ans) {
+        int i = left, j = mid;
+        // 排序用到的中间数组
+        int[] sorted = new int[right - left];
+        int[] tmpInd = new int[right - left];
+        int cur = 0;
+        int cnt = 0; //交换次数
+        while (true) {
+            if (i >= mid) {
+                break;
+            }
+            if (j >= right) {
+                break;
+            }
+            while (j < right && nums[i] > nums[j]) {
+                cnt++;
+                // 修改原始下标位置
+                tmpInd[cur] = ind[j];
+                sorted[cur++] = nums[j++];
+            }
+            while (i < mid && j < right && nums[i] <= nums[j]) {
+                ans[ind[i]] += cnt;
+                // 交换原始下标位置
+                tmpInd[cur] = ind[i];
+                sorted[cur++] = nums[i++];
+            }
+        }
+        while (i < mid) {
+            ans[ind[i]] += cnt;
+            // 交换原始下标位置
+            tmpInd[cur] = ind[i];
+            sorted[cur++] = nums[i++];
+        }
+        while (j < right) {
+            // 修改原始下标位置
+            tmpInd[cur] = ind[j];
+            sorted[cur++] = nums[j++];
+        }
+        // 把排序后的结果放回原数组
+        for (i = 0; i < cur; ++i) {
+            nums[i + left] = sorted[i];
+            ind[i + left] = tmpInd[i];
+        }
     }
 
 }
