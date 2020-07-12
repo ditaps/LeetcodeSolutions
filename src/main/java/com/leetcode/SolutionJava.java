@@ -1,9 +1,6 @@
 package com.leetcode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Leetcode java代码
@@ -36,13 +33,17 @@ public class SolutionJava {
         //boolean ans = solution.isMatch("", "");
         //System.out.println(ans);
 
-        int[] nums = {7, 2, 6, 1};
-        for (int i = 0; i < nums.length; i++) {
-            System.out.print(nums[i] + ",");
-        }
-        System.out.println();
-        List<Integer> ans = solution.countSmaller(nums);
-        ans.stream().forEach(x -> System.out.print(x + ","));
+        //int[] nums = {7, 2, 6, 1};
+        //for (int i = 0; i < nums.length; i++) {
+        //    System.out.print(nums[i] + ",");
+        //}
+        //System.out.println();
+        //List<Integer> ans = solution.countSmaller(nums);
+        //ans.stream().forEach(x -> System.out.print(x + ","));
+
+        int[][] dungeon = {{-2, -5, 10}, {-1, -2, 5}};
+        int ans = solution.calculateMinimumHP(dungeon);
+        System.out.println(ans);
 
     }
 
@@ -336,6 +337,26 @@ public class SolutionJava {
             nums[i + left] = sorted[i];
             ind[i + left] = tmpInd[i];
         }
+    }
+
+    /**
+     * 174. 地下城游戏
+     * https://leetcode-cn.com/problems/dungeon-game/
+     * 压缩dp，从终点向起点倒推
+     *
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        int[] dp = new int[dungeon.length + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[dungeon.length - 1] = 1;
+        for (int j = dungeon[0].length - 1; j >= 0; j--) {
+            for (int i = dungeon.length - 1; i >= 0; i--) {
+                dp[i] = Math.max(Math.min(dp[i], dp[i + 1]) - dungeon[i][j], 1);
+            }
+        }
+        return dp[0];
     }
 
 }
