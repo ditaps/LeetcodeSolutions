@@ -359,4 +359,25 @@ public class SolutionJava {
         return dp[0];
     }
 
+    /**
+     * 96. 不同的二叉搜索树
+     * https://leetcode-cn.com/problems/unique-binary-search-trees/
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[0] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                // 左边子树的种类*右边子树的种类
+                dp[i] += dp[j] * dp[i - 1 - j];
+            }
+        }
+        return dp[n];
+        // 卡特兰树解法
+    }
+
 }
