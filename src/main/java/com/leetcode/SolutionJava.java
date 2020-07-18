@@ -41,10 +41,13 @@ public class SolutionJava {
         //List<Integer> ans = solution.countSmaller(nums);
         //ans.stream().forEach(x -> System.out.print(x + ","));
 
-        int[][] dungeon = {{-2, -5, 10}, {-1, -2, 5}};
-        int ans = solution.calculateMinimumHP(dungeon);
-        System.out.println(ans);
+        //int[][] dungeon = {{-2, -5, 10}, {-1, -2, 5}};
+        //int ans = solution.calculateMinimumHP(dungeon);
+        //System.out.println(ans);
 
+        String s1 = "a", s2 = "b", s3 = "a";
+        boolean ans = solution.isInterleave(s1, s2, s3);
+        System.out.println(ans);
     }
 
     /**
@@ -378,6 +381,59 @@ public class SolutionJava {
         }
         return dp[n];
         // 卡特兰树解法
+    }
+
+    /**
+     * 97. 交错字符串
+     * https://leetcode-cn.com/problems/interleaving-string/
+     *
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        s1 = s1 == null ? "" : s1;
+        s2 = s2 == null ? "" : s2;
+        s3 = s3 == null ? "" : s3;
+        if (s1.length() + s2.length() != s3.length()) {
+            return false;
+        } else if (s3.equals(s1 + s2) || s3.equals(s2 + s1)) {
+            return true;
+        }
+
+        // 解法1
+        //// dp[i][j] 表示当前是是否可以由s1的前i个字符和s2的前j个字符构成
+        //boolean[][] dp = new boolean[s1.length() + 1][s2.length() + 1];
+        //dp[0][0] = true;
+        //for (int i = 0; i <= s1.length(); i++) {
+        //    for (int j = 0; j <= s2.length(); j++) {
+        //        if (i == 0 && j == 0) {
+        //            continue;
+        //        }
+        //        if (i + j <= s3.length()) {
+        //            dp[i][j] = (i > 0 && dp[i - 1][j] && (s1.charAt(i - 1) == s3.charAt(i + j - 1)))
+        //                    || (j > 0 && dp[i][j - 1] && (s2.charAt(j - 1) == s3.charAt(i + j - 1)));
+        //        }
+        //        if (i + j == s3.length() && dp[i][j]) {
+        //            return true;
+        //        }
+        //    }
+        //}
+        // 解法2， 滚动数组
+        boolean[] dp = new boolean[s2.length() + 1];
+        dp[0] = true;
+        for (int i = 0; i <= s1.length(); i++) {
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i > 0) {
+                    dp[j] = dp[j] && s1.charAt(i - 1) == s3.charAt(i + j - 1);
+                }
+                if (j > 0) {
+                    dp[j] = dp[j] || (dp[j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                }
+            }
+        }
+        return dp[s2.length()];
     }
 
 }
