@@ -45,8 +45,12 @@ public class SolutionJava {
         //int ans = solution.calculateMinimumHP(dungeon);
         //System.out.println(ans);
 
-        String s1 = "a", s2 = "b", s3 = "a";
-        boolean ans = solution.isInterleave(s1, s2, s3);
+        //String s1 = "a", s2 = "b", s3 = "a";
+        //boolean ans = solution.isInterleave(s1, s2, s3);
+        //System.out.println(ans);
+
+        int[] nums = {3, 1, 5, 8};
+        int ans = solution.maxCoins(nums);
         System.out.println(ans);
     }
 
@@ -434,6 +438,32 @@ public class SolutionJava {
             }
         }
         return dp[s2.length()];
+    }
+
+    /**
+     * 312. 戳气球
+     * https://leetcode-cn.com/problems/burst-balloons/
+     *
+     * @param nums
+     * @return
+     */
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        // dp[i][j] 表示搓破 i 到 j 之间气球的最大值，不包括i j
+        int[][] dp = new int[n + 2][n + 2];
+        int[] t = new int[n + 2];
+        for (int i = 1; i <= n; i++) {
+            t[i] = nums[i - 1];
+        }
+        t[0] = t[n + 1] = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i + 2; j < n + 2; j++) {
+                for (int k = i + 1; k < j; k++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[k][j] + t[i] * t[k] * t[j]);
+                }
+            }
+        }
+        return dp[0][n + 1];
     }
 
 }
