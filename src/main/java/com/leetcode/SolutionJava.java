@@ -53,10 +53,17 @@ public class SolutionJava {
         //int ans = solution.maxCoins(nums);
         //System.out.println(ans);
 
-        int[] nums = {2, 7, 7, 11, 15};
-        int target = 14;
-        int[] ans = solution.twoSum(nums, target);
-        System.out.println(ans[0] + ", " + ans[1]);
+        //int[] nums = {2, 7, 7, 11, 15};
+        //int target = 14;
+        //int[] ans = solution.twoSum(nums, target);
+        //System.out.println(ans[0] + ", " + ans[1]);
+
+        ListNode l1 = ListNode.fromArray(new int[]{2});
+        ListNode l2 = ListNode.fromArray(new int[]{});
+        //ListNode l3 = ListNode.fromArray(new int[] {-1});
+        ListNode[] lists = new ListNode[]{l1, l2};
+        ListNode ans = solution.mergeKLists(lists);
+        ListNode.printList(ans);
 
     }
 
@@ -492,6 +499,46 @@ public class SolutionJava {
             }
         }
         return ans;
+    }
+
+    /**
+     * 23. 合并K个排序链表
+     * https://leetcode-cn.com/problems/merge-k-sorted-lists/
+     *
+     * @param lists
+     * @return
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        ListNode root = null;
+        for (int i = 0; i < lists.length; ++i) {
+            root = mergeSortedList(root, lists[i]);
+        }
+        return root;
+    }
+
+    public ListNode mergeSortedList(ListNode la, ListNode lb) {
+        ListNode root = new ListNode(0);
+        ListNode ita = la, itb = lb, it = root;
+        while (true) {
+            if (ita == null) {
+                it.next = itb;
+                break;
+            }
+            if (itb == null) {
+                it.next = ita;
+                break;
+            }
+            if (ita.val <= itb.val) {
+                it.next = ita;
+                ita = ita.next;
+                it = it.next;
+            } else {
+                it.next = itb;
+                itb = itb.next;
+                it = it.next;
+            }
+        }
+        return root.next;
     }
 
 }
