@@ -49,9 +49,15 @@ public class SolutionJava {
         //boolean ans = solution.isInterleave(s1, s2, s3);
         //System.out.println(ans);
 
-        int[] nums = {3, 1, 5, 8};
-        int ans = solution.maxCoins(nums);
-        System.out.println(ans);
+        //int[] nums = {3, 1, 5, 8};
+        //int ans = solution.maxCoins(nums);
+        //System.out.println(ans);
+
+        int[] nums = {2, 7, 7, 11, 15};
+        int target = 14;
+        int[] ans = solution.twoSum(nums, target);
+        System.out.println(ans[0] + ", " + ans[1]);
+
     }
 
     /**
@@ -464,6 +470,28 @@ public class SolutionJava {
             }
         }
         return dp[0][n + 1];
+    }
+
+    /**
+     * 167. 两数之和 II - 输入有序数组
+     * https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] numbers, int target) {
+        int[] ans = new int[2];
+        for (int i = 0; i < numbers.length; ++i) {
+            int x = target - numbers[i];
+            int ind = Arrays.binarySearch(numbers, i + 1, numbers.length, x);
+            if (ind > 0) {
+                ans[0] = i + 1;
+                ans[1] = ind + 1;
+                return ans;
+            }
+        }
+        return ans;
     }
 
 }
