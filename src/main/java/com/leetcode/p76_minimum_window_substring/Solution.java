@@ -1,8 +1,5 @@
 package com.leetcode.p76_minimum_window_substring;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 76. 最小覆盖子串
  * <p>
@@ -27,7 +24,7 @@ import java.util.Map;
 public class Solution {
 
     public static void main(String[] args) {
-        String s = "ADOBECODEBANC", t = "A";
+        String s = "ADOBECODEBANC", t = "ABC";
         String ans = new Solution().minWindow(s, t);
         System.out.println(ans);
     }
@@ -50,24 +47,24 @@ public class Solution {
             return "";
         }
         int sLen = s.length(), tLen = t.length();
-        Map<Character, Integer> tMap = new HashMap<>();
-        Map<Character, Integer> windowMap = new HashMap<>();
+        int[] tMap = new int[128];
+        int[] windowMap = new int[128];
         for (int i = 0; i < t.length(); i++) {
-            tMap.put(t.charAt(i), tMap.getOrDefault(t.charAt(i), 0) + 1);
-            windowMap.put(t.charAt(i), 0);
+            tMap[t.charAt(i)]++;
         }
         int ansLeft = -1, ansRight = sLen;
         int left = 0, right = -1;
         int matchCnt = 0;
+        char[] sChars = s.toCharArray();
         while (true) {
-            while (left < sLen && !tMap.containsKey(s.charAt(left))) {
+            while (left < sLen && tMap[sChars[left]] == 0) {
                 ++left;
             }
             // 延展右边
             for (++right; right < sLen; ++right) {
-                char c = s.charAt(right);
-                if (windowMap.containsKey(c)) {
-                    windowMap.put(c, windowMap.get(c) + 1);
+                char c = sChars[right];
+                if (tMap[c] > 0) {
+                    windowMap[c]++;
                     ++matchCnt;
                 }
                 if (matchCnt < tLen) {
@@ -89,14 +86,13 @@ public class Solution {
             }
             // 收缩左边
             for (; left <= right; ++left) {
-                char c = s.charAt(left);
-                if (windowMap.containsKey(c) == false) {
+                char c = sChars[left];
+                if (tMap[c] == 0) {
                     continue;
                 }
-                Integer cnt = windowMap.get(c);
-                windowMap.put(c, cnt - 1);
+                windowMap[c]--;
                 --matchCnt;
-                if (cnt.equals(tMap.get(c))) {
+                if (windowMap[c] < tMap[c]) {
                     // 去除前相等，说明这时候左边收缩之后不能再收缩了
                     if (right - left < ansRight - ansLeft) {
                         ansLeft = left;
@@ -117,9 +113,9 @@ public class Solution {
      * @param windowMap
      * @return
      */
-    boolean isMatch(Map<Character, Integer> tMap, Map<Character, Integer> windowMap) {
-        for (Character c : windowMap.keySet()) {
-            if (windowMap.get(c) < tMap.get(c)) {
+    boolean isMatch(int[] tMap, int[] windowMap) {
+        for (int i = 0; i < tMap.length; i++) {
+            if (windowMap[i] < tMap[i]) {
                 return false;
             }
         }
